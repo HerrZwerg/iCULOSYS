@@ -1,0 +1,728 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>CULOSYS</title>
+	<link rel="stylesheet" href="jquery.mobile-1.0a4.1.min.css" />
+	<script type="text/javascript" src="jquery-1.5.2.min.js"></script>
+    <link rel="stylesheet" href="jqm-docs.css"/>
+	<script type="text/javascript" src="jquery.mobile-1.0a4.1.min.js"></script>
+    <script type="text/javascript" src="phonegap.0.9.5.min.js"></script>
+
+
+<script type="text/javascript">
+<!--
+   function initialize() {
+    
+  }
+      var geocoder;
+  var map;
+     function initialize2(lat, long) {
+    geocoder = new google.maps.Geocoder();
+	var myLatlng = new google.maps.LatLng(lat, long);
+    var myOptions = {
+      zoom: 15,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	
+	
+	
+	
+  }
+ function codeAddress(addr) {
+    
+	var address = addr;
+ 
+	geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map, 
+            position: results[0].geometry.location
+        });
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  }
+   function loadScript() {
+  
+	var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "http://maps.google.com/maps/api/js?sensor=true&callback=initialize";
+    document.body.appendChild(script);
+  }
+  
+
+ 
+ var KartenID =null;
+  var SystemID =null;
+ var Passwort = null;
+ var form1var = null;
+ var FirmaID =null;
+ var storeDate=null;
+  $(document).ready(function() {  
+    // Assign global variables  
+ 
+$("#kartenID").val(localStorage.getItem("KartenID"));
+$("#password").val(localStorage.getItem("Passwort"));
+$("#SystemID").val(localStorage.getItem("SystemID"));
+    KartenID = localStorage.getItem("KartenID");  
+    Passwort = localStorage.getItem("Passwort");  
+    SystemID = localStorage.getItem("SystemID");
+	storeDate= localStorage.getItem("storeDate");
+	if(SystemID==""||SystemID==null)
+	{
+				$('.frontlink').each(function(){
+      
+      			//$(this).attr('href', '#setup');
+			});
+	}
+  });  
+
+$('#form1').submit(function() {  
+
+ $.mobile.pageLoading();  
+ 
+   KartenID = $("#kartenID").val();
+ Passwort = $("#password").val();
+ var jetzt = new Date();
+
+
+localStorage.setItem("KartenID", KartenID);
+localStorage.setItem("Passwort", Passwort);
+localStorage.setItem("storeDate", jetzt.getTime());
+    
+	
+
+});
+function hider()
+{
+	 $.mobile.pageLoading(true);
+	
+}
+
+
+        function onPartner(result, methodName)
+        {
+            
+			
+			var html = '<li data-role=\"list-divider\">Partnerbetriebe</li>';
+            for(var i = 0; i < result.length; i++)
+            {
+               	  
+				  html =html + '<li><a href=\"#detail\" onclick=\"return redir(\''+result[i].ID+'\');\"><h3><p><img align=left style=\"max-height:40px;\" ONERROR=\"this.src=http://87.106.135.111/CULOSYS/images/blank.gif\" src=\"http://87.106.135.111/CULOSYS/ThumbNail.ashx?p=' + result[i].Logo + '&Height=50&Width=150&cache=false\"  border=\"0\" ></p>'+result[i].Firma+'</h3>	<p><strong></strong></p><p>'+result[i].Strasse+' '+result[i].Plz+' '+result[i].Ort+'</p><p>'+result[i].Telefon+'</p><p>'+result[i].Email+'<br>'+result[i].Web+'</p></a></li>';
+            }
+$('#det2').html('');
+$('#det2').append(html);
+      localStorage.setItem("partnerStr", html);      
+$('#det2').listview();
+$('#det2').listview('refresh');
+          $.mobile.pageLoading(true);   
+        }
+
+
+$('#foo').live('pageshow', function (event, ui) 
+{
+	SystemID = localStorage.getItem("SystemID");
+	
+	
+	if(SystemID==""||SystemID==null)
+	{
+	 		  //$.mobile.pageLoading(true);
+			var html = '<li data-role=\"list-divider\">Kartendaten eingeben</li>';
+			html = html+'<li>Bitte Ihre Kartendaten eingeben</li>';
+			html = html+'<li><a href=\"#setup\">Zum Setup</a></li>';
+           $('#Kontakt').html('');
+			$('#Kontakt').append(html);
+			$('#Kontakt').listview();
+			$('#Kontakt').listview('refresh');
+           $.mobile.pageLoading(true);
+		setTimeout(hider, 250);
+	} else {
+		
+		//alert(localStorage.getItem("fooDate"));
+		date2 = new Date(localStorage.getItem("fooDate"));
+		myDate = new Date();
+		var check = false;
+		if(date2<=myDate)
+		{
+		check = true;
+		}
+		var html = localStorage.getItem("fooStr");
+		
+		if(html==null)
+		{
+			
+			check = true;
+		}
+		
+		if(check==true)
+		{
+		$.mobile.pageLoading(); 
+				
+		myDate.setDate(myDate.getDate() + 10);
+		localStorage.setItem("fooDate", myDate);
+		
+		return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=getStart&jsonp=onStart&SystemID="+localStorage.getItem("SystemID"), dataType: "jsonp"});
+		} 
+		else
+		{
+			
+			
+			$('.changesrc').each(function(){
+      
+      			//$(this).attr('src', 'http://87.106.135.111/CULOSYS/ThumbJpeg.ashx?VFilePath=' + result[0].Logo + '&width=200&height=80&Bevel=false');
+				$(this).attr('src',  localStorage.getItem("logo"));
+			});
+			$('#Kontakt').html('');
+			$('#Kontakt').append(html);
+			$('#Kontakt').listview();
+			$('#Kontakt').listview('refresh');
+			
+		}
+		
+	}
+});
+function onStart(result, methodName)
+        {
+			
+
+			// Insert preloaded image into the DOM tree
+			$('.changesrc').each(function(){
+      
+      			//$(this).attr('src', 'http://87.106.135.111/CULOSYS/ThumbJpeg.ashx?VFilePath=' + result[0].Logo + '&width=200&height=80&Bevel=false');
+				$(this).attr('src', 'http://87.106.135.111/CULOSYS/ThumbNail.ashx?p=' + result[0].Logo + '&Height=100&Width=300&cache=false');
+			});
+
+			
+		   $('#PrName').html(result[0].Programm);
+		   
+
+		   	var html = '<li data-role=\"list-divider\">Kontakt</li>';
+			html = html+'<li>'+result[0].Kontakt;
+			html = html+'</li>';
+           $('#Kontakt').html('');
+			$('#Kontakt').append(html);
+			$('#Kontakt').listview();
+			$('#Kontakt').listview('refresh');
+           localStorage.setItem("fooStr", html);
+		   localStorage.setItem("logo", 'http://87.106.135.111/CULOSYS/ThumbNail.ashx?p=' + result[0].Logo + '&Height=100&Width=300&cache=false');
+		   document.getElementById('ico').style.visibility='visible'; 
+		   
+		   $.mobile.pageLoading(true);
+        }
+
+$('#einkauf').live('pageshow', function (event, ui) 
+{
+
+	$.mobile.pageLoading();  
+return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=GetTopVerkauf&jsonp=onEinkauf&KartenID="+localStorage.getItem("KartenID"), dataType: "jsonp"});
+
+});
+
+ function onEinkauf(result, methodName)
+        {
+           	var html = '<li data-role=\"list-divider\">Kartennutzung</li>';
+            html = html+'<li >';
+			for(var i = 0; i < result.length; i++)
+            {
+					
+						html = html+'		<li>';
+				
+					html = html+'	<p style=\"font-size:9px;padding-top:5px;\">'+result[i].Datum+'</p>';
+					html = html+'	<p><strong>'+result[i].Abzug+'</strong></p>';
+					if(result[i].Punkte!=""&&result[i].Punkte!="0")
+					{
+						html = html+'<p class=\"ui-li-aside\" style=\"font-size:12px;padding-top:12px;\">'+result[i].Punkte+' Punkte</p>';
+					} 
+					else 
+					{
+						html = html+'<p class=\"ui-li-aside\" style=\"font-size:12px;padding-top:12px;\">€ '+result[i].Betrag+'</p>';
+					}
+					
+				
+			html = html+'	</a></li>';
+					
+
+            }
+			html = html+'</li>';
+            $('#det3').html('');
+			$('#det3').append(html);
+			$('#det3').listview();
+			$('#det3').listview('refresh');
+           $.mobile.pageLoading(true);
+        }
+
+$('#konto').live('pageshow', function (event, ui) 
+{
+	
+	$.mobile.pageLoading();  
+return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=GetGuthaben&jsonp=onKonto&KartenID="+localStorage.getItem("KartenID")+"&SystemID="+localStorage.getItem("SystemID"), dataType: "jsonp"});
+
+});
+
+ 	function onKonto(result, methodName)
+        {
+		
+			var html = '';
+            		html = html+'<li data-role=\"list-divider\">Aktuelles Guthaben</li><li><p><strong>'+result[0].Abzug+'</strong></p>';
+					if(result[0].Punkte!=""&&result[0].Punkte!="0")
+					{
+						html = html+'<p class=\"ui-li-aside\">'+result[0].Punkte+' Punkte</p>';
+					} 
+					else 
+					{
+						html = html+'<p class=\"ui-li-aside\">€ '+result[0].Betrag+'</p>';
+					}
+					html = html+'</li>';
+			        html = html+'<li data-role=\"list-divider\">Nächste Ausschüttung</li><li><p><strong>'+result[1].Abzug+'</strong></p>';
+					if(result[1].Punkte!=""&&result[1].Punkte!="0")
+					{
+						html = html+'<p class=\"ui-li-aside\">'+result[1].Punkte+' Punkte</p>';
+					} 
+					else 
+					{
+						html = html+'<p class=\"ui-li-aside\">'+result[1].Betrag+'</p>';
+					}
+					html = html+'</li>';
+			html = html+'<li data-role=\"list-divider\">Ausschüttungen</li>';
+			var ii=0;
+			var iii=0;
+			var iiii=0;
+			for(var i = 2; i < result.length; i++)
+            {
+					if(result[i].Art=="98")
+					{
+						html = html+'<li><p style=\"font-size:10px;\">'+result[i].Datum+'</p><p>'+result[i].Abzug+'</p>';
+						if(result[i].Punkte!=""&&result[i].Punkte!="0")
+						{
+							html = html+'<p class=\"ui-li-aside\">'+result[i].Punkte+' Punkte</p>';
+						} 
+						else 
+						{
+							html = html+'<p class=\"ui-li-aside\">€ '+result[i].Betrag+'</p>';
+						}
+						html = html+'</li>';
+						iii=1;
+					} 
+						else 
+					{
+						if(iii==0)
+						{
+							html = html+'<li><p><strong>Keine Ausschüttungen</strong></p></li>';
+							iii=1;
+						}
+					
+					
+						//if(ii==0)
+						{
+						html = html+'<li data-role=\"list-divider\">Guthabenszahlungen</li>';	
+						ii=1;	
+						}
+						html = html+'<li><p style=\"font-size:10px;\">'+result[i].Datum+'</p><p>'+result[i].Abzug+'</p>';
+						if(result[i].Punkte!=""&&result[i].Punkte!="0")
+						{
+							html = html+'<p class=\"ui-li-aside\">'+result[i].Punkte+' Punkte</p>';
+						} 
+						else 
+						{
+							html = html+'<p class=\"ui-li-aside\">€ '+result[i].Betrag+'</p>';
+						}
+						html = html+'</li>';
+						iiii=1;
+					}
+					
+            }
+					if(iiii==0)
+					{
+					html = html+'<li data-role=\"list-divider\">Guthabenszahlungen</li>';	
+					html = html+'<li><p><strong>Keine Guthabenszahlungen</strong></p></li>';
+					iiii=1;
+					}
+            $('#det4').html('');	
+			$('#det4').append(html);
+			$('#det4').listview();
+			$('#det4').listview('refresh');
+           $.mobile.pageLoading(true);
+        }
+
+
+        
+
+function savePage()
+{
+	 $.mobile.pageLoading();  
+	
+	localStorage.setItem("KartenID", $("#kartenID").val());
+	localStorage.setItem("Passwort", $("#password").val());
+	return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=getSystem&fd=1&jsonp=ongetSystem&KartenID="+$("#kartenID").val()+"&Passwort="+$("#password").val(), dataType: "jsonp"});
+}
+
+        function ongetSystem(result, methodName)
+        {
+			SystemID=result[0];
+			if(isNaN(SystemID))
+			{
+				$('#errorP').html(SystemID);  
+				$.mobile.pageLoading(true); 
+			}
+			else 
+			{
+				localStorage.setItem("SystemID", SystemID);
+				$.mobile.pageLoading(true);  
+				$('#errorP').html("Speichern erfolgreich");  
+			}
+		}
+
+function redir(ID)
+{
+	
+FirmaID=ID;	
+
+}
+
+
+$('#partner').live('pageshow', function (event, ui) 
+{
+	date2 = new Date(localStorage.getItem("partnerDate"));
+		myDate = new Date();
+		var check = false;
+		if(date2<=myDate)
+		{
+		check = true;
+		}
+		var html = localStorage.getItem("partnerStr");
+		
+		if(html==null)
+		{
+			
+			check = true;
+		}
+		
+		if(check==true)
+		{
+		
+			myDate.setDate(myDate.getDate() + 10);
+		localStorage.setItem("partnerDate", myDate);
+	
+	
+			$.mobile.pageLoading();  
+			return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=topCustomers&jsonp=onPartner&SystemID="+localStorage.getItem("SystemID"), dataType: "jsonp"});
+			$.mobile.pageLoading(true);  
+		} else
+		{
+			
+
+			$('#det2').html('');
+			$('#det2').append(html);
+			$('#det2').listview();
+			$('#det2').listview('refresh');
+			
+		}
+});
+
+$('#detail').live('pageshow', function (event, ui) 
+{
+	$.mobile.pageLoading();  
+return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=getFirma&jsonp=onFirmaDetail&FirmaID="+FirmaID, dataType: "jsonp"});
+});
+
+function onFirmaDetail(result, methodName)
+        {
+		
+			var html = '<li data-role=\"list-divider\">Partnerbetriebe</li>';
+			var addr = result[0].Strasse+', '+result[0].Plz+' '+result[0].Ort;
+
+  	  
+				  html =html + '<li><img align=left ONERROR=\"this.src=http://87.106.135.111/CULOSYS/images/blank.gif\" src=\"http://87.106.135.111/CULOSYS/ThumbNail.ashx?p=' + result[0].Logo + '&Width=100&Height=80&cache=false\"  border=\"0\" ><h3>'+result[0].Firma+'</h3>	<p><strong></strong></p><p>'+result[0].Strasse+' '+result[0].Plz+' '+result[0].Ort+'</p><p>'+result[0].Telefon+'</p><p>'+result[0].Email+' '+result[0].Web+'</p></li>';
+            
+			html = html +'<li data-role=\"list-divider\">Details</li>';
+			html = html +'<li >'+result[0].Content+'</li>';
+			
+			
+$('#det7').html('');		
+$('#det7').append(html);
+           
+$('#det7').listview();
+$('#det7').listview('refresh');
+          	document.getElementById('mapList').style.visibility='visible';
+			initialize2(-34.397, 190.644);
+			
+			codeAddress(addr);
+		  
+		  //loader();
+		  $.mobile.pageLoading(true);  
+        }
+                function loader() {
+
+                    var state = document.readyState;
+
+                    if (state == 'loaded' || state == 'complete') {
+
+                         run();
+
+                    } else {
+
+                         if (navigator.userAgent.indexOf('Browzr') > -1) {
+
+                              setTimeout(run, 250);
+
+                         } else {
+
+                              document.addEventListener('deviceready',run,false);
+
+                         }
+
+                    }
+
+               }
+
+               function run() {
+                    var win = function(position) {                          // Grab coordinates object from the Position object passed into success callback.
+                         var coords = position.coords;
+                         // Call for static google maps data - make sure you use your own Google Maps API key!
+
+						 
+						 
+                         var url = "http://maps.google.com/maps/api/staticmap?center=" + coords.latitude + "," + coords.longitude + "&zoom=13&size=320x480&maptype=roadmap&key=MyGoogleMapsAPIKey&sensor=true";
+                         document.getElementById('map').setAttribute('src',url);
+                    };
+                    var fail = function(e) {
+                         alert('Can\'t retrieve position.\nError: ' + e);
+                    };
+                    navigator.geolocation.getCurrentPosition(win, fail);
+					
+               } 
+
+ 
+ -->
+</script>
+    <script type="text/javascript" charset="utf-8">    
+	// Wait for PhoneGap to load    //   
+	  function onLoad() 
+	  {    
+	     loadScript();
+	   document.addEventListener("deviceready", onDeviceReady, false);   
+	    }   
+		 // PhoneGap is loaded and it is now safe to make calls PhoneGap methods    //  
+		   function onDeviceReady() 
+		   {        
+		   	navigator.network.isReachable("phonegap.com", reachableCallback, {});   
+		    }  
+		     // Check network status    //   
+			  function reachableCallback(reachability)
+			   {       
+			    // There is no consistency on the format of reachability       
+				 var networkState = reachability.code || reachability;       
+				  var states = {};        
+				  states[NetworkStatus.NOT_REACHABLE]                      = 'No network connection';        					states[NetworkStatus.REACHABLE_VIA_CARRIER_DATA_NETWORK] = 'Carrier data connection';       
+				   states[NetworkStatus.REACHABLE_VIA_WIFI_NETWORK]         = 'WiFi connection';        
+				  if(states[networkState]=='No network connection')
+				  {
+					var html = '<li data-role=\"list-divider\">Keine Datenverbindung</li>';
+					html = html+'<li>Um Ihren aktuellen Guthabensstand abzufragen, müssen Sie eine aktive Datenverbindung haben.<br></li>';
+					
+					html = html+'<li><a href=\"javascript:void(0);\" onclick=\"onDeviceReady()\">Erneut versuchen</a></li>';
+				   $('#Kontakt').html('');
+					$('#Kontakt').append(html);
+					$('#Kontakt').listview();
+					$('#Kontakt').listview('refresh');
+				   $.mobile.pageLoading(true);
+					 document.getElementById('ico').style.visibility='hidden'; 
+				  } else {
+							$.mobile.pageLoading(); 
+		return $.ajax({url: "http://iphone.brain-behind.com/Service.ashx?methodName=getStart&jsonp=onStart&SystemID="+localStorage.getItem("SystemID"), dataType: "jsonp"});
+		
+					
+					
+					   
+					 
+				  }
+				  
+				  
+				  
+				   }    
+                 </script>
+<style type="text/css">
+  #map_canvas { height: 500px;width: 120% }
+</style>
+</head>
+
+<body onload="onLoad()">
+<form id="form1">
+<!-- Start of first page -->
+<div data-role="page" id="foo" style="background-image:url(images/back.png);">
+
+	<div data-role="header">
+		<h1 style="width:250px">Herzlich willkommen</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" style="min-height:344px">	
+		
+		<img src="images/logo.gif" class="changesrc" align="middle" style="width:100%;padding:5px;" />
+		
+        <ul data-role="listview" id="Kontakt" data-inset="true" >
+
+        </ul>
+      
+	</div><!-- /content -->
+
+	<div data-role="footer" >
+		<div id="ico"><a href="#foo" id="fooID" class="frontlink"><img src="images/home.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#konto" id="kontoID" class="frontlink"><img src="images/konto.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#partner" id="partnerID" class="frontlink"><img src="images/partner.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"  border="0"/></a><a href="#einkauf" id="einkaufID" class="frontlink"><img src="images/einkauf.png"  border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"/></a><a href="#setup" ><img src="images/setup.png" border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" /></a></div>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+<div data-role="page" id="konto" style="background-image:url(images/back.png);">
+
+	<div data-role="header">
+		<h1 ><div style="float:right;" id="PrLogo1"><img src="images/logo.gif" class="changesrc" style="height:30px;" /></div></h1>
+	</div><!-- /header -->
+
+	<div data-role="content"  >	
+
+        <p>                 <ul data-role="listview" id="det4" data-inset="true" >
+
+
+        
+        </ul></p>
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<div><a href="#foo"><img src="images/home.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#konto"><img src="images/konto.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#partner"><img src="images/partner.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"  border="0"/></a><a href="#einkauf"><img src="images/einkauf.png"  border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"/></a><a href="#setup"><img src="images/setup.png" border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" /></a></div>
+	</div><!-- /footer -->
+</div><!-- /page -->
+<div data-role="page" id="partner" style="background-image:url(images/back.png);">
+
+	<div data-role="header">
+		<h1 ><div style="float:right;" id="PrLogo2"><img src="images/logo.gif" class="changesrc" style="height:30px;" /></div></h1>
+	</div><!-- /header -->
+
+	<div data-role="content"   style="min-height:344px">	
+
+
+         <ul data-role="listview" id="det2" data-inset="true" data-filter="true">
+
+
+        
+        </ul>
+        
+	</div><!-- /content -->
+
+	<div data-role="footer">
+	<div><a href="#foo"><img src="images/home.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#konto"><img src="images/konto.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#partner"><img src="images/partner.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"  border="0"/></a><a href="#einkauf"><img src="images/einkauf.png"  border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"/></a><a href="#setup"><img src="images/setup.png" border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" /></a></div>
+	</div><!-- /header -->
+</div><!-- /page -->
+
+
+<div data-role="page" id="einkauf" style="background-image:url(images/back.png);">
+
+	<div data-role="header">
+		<h1 ><div style="float:right;" id="PrLogo3"><img src="images/logo.gif" class="changesrc" style="height:30px;" /></div></h1>
+	</div><!-- /header -->
+
+	<div data-role="content"  >	
+
+        
+       <ul data-role="listview" id="det3" data-inset="true" >
+
+
+        
+        </ul>
+        
+
+        
+        
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<div><a href="#foo"><img src="images/home.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#konto"><img src="images/konto.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#partner"><img src="images/partner.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"  border="0"/></a><a href="#einkauf"><img src="images/einkauf.png"  border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"/></a><a href="#setup"><img src="images/setup.png" border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" /></a></div>
+	</div><!-- /header -->
+</div><!-- /page -->
+
+
+<!-- Start of second page -->
+<div data-role="page" id="setup" style="background-image:url(images/back.png);">
+
+	<div data-role="header">
+		<h1 ><div style="float:right;" id="PrLogo4"><img src="images/logo.gif" class="changesrc" style="height:30px;" /></div></h1>
+	</div><!-- /header -->
+
+	<div data-role="content"   style="min-height:344px">	
+		 <div data-role="fieldcontain">
+        
+        <p>
+        Bitte geben Sie hier Ihre Kartennummer und Ihr Passwort ein.
+        </p>
+      
+        <p>
+       
+    <label for="name">Kartennummer:</label>
+    <input type="text" name="kartenID" id="kartenID" value="" autocomplete="off"  />
+       
+        
+        </p>
+        <p>
+        
+    <label for="name">Passwort:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+    <input type="password" name="password" id="password" value="" autocomplete="off"/>
+      
+       
+        </p>	
+         <p>
+         
+         <input type="button" onclick="savePage()" value="Speichern" />
+         
+         </p>
+         <p id="errorP" style="color:#C00; font-weight:bold;">
+         
+         </p>
+         
+         </div>		
+		
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<div><a href="#foo"><img src="images/home.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#konto"><img src="images/konto.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#partner"><img src="images/partner.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"  border="0"/></a><a href="#einkauf"><img src="images/einkauf.png"  border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"/></a><a href="#setup"><img src="images/setup.png" border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" /></a></div>
+	</div><!-- /header -->
+</div><!-- /page -->
+<div data-role="page" id="detail" style="background-image:url(images/back.png);">
+
+	<div data-role="header">
+		<h1 ><div style="float:right;" id="PrLogo5"><img src="images/logo.gif" class="changesrc" style="height:30px;" /></div></h1>
+	</div><!-- /header -->
+
+	<div data-role="content"  style="min-height:344px">	
+		
+		
+		
+        
+       <ul data-role="listview" id="det7" data-inset="true" >
+
+
+        
+        </ul>
+        
+
+  
+              
+               <ul data-role="listview" id="mapList" data-inset="true" style="visibility:hidden;" >
+<li data-role=\"list-divider\">Kartenanzeige</li>
+<li>
+             <div id="map_canvas"></div>  
+          	
+          </li>
+        </ul>
+      
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<div><a href="#foo"><img src="images/home.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#konto"><img src="images/konto.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" border="0" /></a><a href="#partner"><img src="images/partner.png" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"  border="0"/></a><a href="#einkauf"><img src="images/einkauf.png"  border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;"/></a><a href="#setup"><img src="images/setup.png" border="0" style="padding-left:10px; padding-right:10px;padding-top:5px; padding-bottom:5px;" /></a></div>
+	</div><!-- /footer -->
+</div><!-- /page -->
+</form>
+</body>
+</html>
